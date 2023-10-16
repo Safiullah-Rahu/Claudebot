@@ -110,8 +110,10 @@ def manage_chat():
                             dimension = 1536 #512   # 1536 dim of text-embedding-ada-002
                             )
                     st.success('Index Successfully Created!')
-                    time.sleep(80)
+
                     st.info('Initializing Document Uploading to DB...')
+                    time.sleep(80)
+                    
                     # Upload documents to the Pinecone index
                     vector_store = Pinecone.from_documents(docs, embeddings, index_name=pinecone_index)
                     
