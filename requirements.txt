@@ -1,0 +1,10 @@
+streamlit
+langchain
+tiktoken
+pypdf
+pinecone-client
+PyPDF2
+pdfplumber
+anthropic
+sentence_transformers
+InstructorEmbedding
