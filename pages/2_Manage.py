@@ -48,7 +48,7 @@ def load_docs(files):
         elif file_extension == ".docx":
             docx_loader = docx2txt.process(file_path) #UnstructuredWordDocumentLoader(file_path)
             #docx_doc = docx_loader.load()
-            st.write(docx_loader)
+            #st.write(docx_loader)
             all_text.append(docx_loader)
         else:
             st.warning('Please provide txt/pdf/docx/doc.', icon="⚠️")
