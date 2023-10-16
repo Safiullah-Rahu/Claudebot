@@ -90,35 +90,35 @@ def manage_chat():
                     docs = text_splitter.create_documents(documents)
                     st.success("Document Loaded Successfully!")
 
-                # Initialize OpenAI embeddings
-                embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
-                #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-                #st.info("Embeddings model loaded!")
-                # Display the uploaded file content
-                file_container = st.expander(f"Click here to see your uploaded content:")
-                file_container.write(docs)
-    
-                # Display success message
-                # st.success("Document Loaded Successfully!")
-                pinecone_index = st.text_input("Enter the name of Index: ")
-                if pinecone_index != "":
-                    st.info('Initializing Index Creation...')
-                    # Create a new Pinecone index
-                    pinecone.create_index(
-                            name = pinecone_index,
-                            metric = 'cosine',
-                            dimension = 1536 #512   # 1536 dim of text-embedding-ada-002
-                            )
-                    st.success('Index Successfully Created!')
+            # Initialize OpenAI embeddings
+            embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
+            #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+            #st.info("Embeddings model loaded!")
+            # Display the uploaded file content
+            file_container = st.expander(f"Click here to see your uploaded content:")
+            file_container.write(docs)
 
-                    st.info('Initializing Document Uploading to DB...')
-                    time.sleep(80)
-                    
-                    # Upload documents to the Pinecone index
-                    vector_store = Pinecone.from_documents(docs, embeddings, index_name=pinecone_index)
-                    
-                    # Display success message
-                    st.success("Document Uploaded Successfully!")
+            # Display success message
+            # st.success("Document Loaded Successfully!")
+            pinecone_index = st.text_input("Enter the name of Index: ")
+            if pinecone_index != "":
+                st.info('Initializing Index Creation...')
+                # Create a new Pinecone index
+                pinecone.create_index(
+                        name = pinecone_index,
+                        metric = 'cosine',
+                        dimension = 1536 #512   # 1536 dim of text-embedding-ada-002
+                        )
+                st.success('Index Successfully Created!')
+
+                st.info('Initializing Document Uploading to DB...')
+                time.sleep(80)
+                
+                # Upload documents to the Pinecone index
+                vector_store = Pinecone.from_documents(docs, embeddings, index_name=pinecone_index)
+                
+                # Display success message
+                st.success("Document Uploaded Successfully!")
         except:
             st.toast("Select any one option to proceed.")
 
