@@ -174,7 +174,7 @@ def chat(pinecone_index, query):
     templ = templat + contex
     promptt = PromptTemplate(input_variables=["chat_history", "question"], template=templ)
     agent = LLMChain(
-        llm=ChatAnthropic(model=model_name, temperature=temperature, top_p=top_p, top_k=top_k, streaming=True),
+        llm=ChatAnthropic(model=model_name, temperature=temperature, top_p=top_p, top_k=top_k, max_tokens_to_sample=99999, streaming=True),
         prompt=promptt,
         verbose=True,
         memory=memory
