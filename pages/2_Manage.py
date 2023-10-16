@@ -76,13 +76,13 @@ def manage_chat():
         st.header("Create New Index to Upload Documents")
         st.write("---")
         col1, col2 = st.columns([1,1])
-        doc_ = col1.checkbox("Upload Documents [PDF/TXT/DOCX/DOC]")
+        doc_ = col1.checkbox("Upload Documents [PDF/TXT/DOCX]")
         #url_ = col2.checkbox("Upload Website Content [URL]")
         # Prompt the user to upload PDF/TXT files
         try:
             if doc_:
-                st.write("Upload PDF/TXT/DOCX/DOC Files:")
-                uploaded_files = st.file_uploader("Upload", type=["pdf", "txt", "docx", "doc"], label_visibility="collapsed", accept_multiple_files = True)
+                st.write("Upload PDF/TXT/DOCX Files:")
+                uploaded_files = st.file_uploader("Upload", type=["pdf", "txt", "docx"], label_visibility="collapsed", accept_multiple_files = True)
                 if uploaded_files != []:
                     st.info('Initializing Document Loading...')
                     documents = load_docs(uploaded_files)
