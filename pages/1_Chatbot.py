@@ -141,16 +141,16 @@ Use the information from the below source to answer any questions.
 #     verbose=True,
 #     memory=ConversationBufferWindowMemory(k=2),
 # )
-quest_prompt = """Generate a standalone question which is based on the new question plus the chat history. 
-Chat History:
-{chat_history}
-Just create the standalone question without commentary. New question: {question}"""
-q_prompt = PromptTemplate(input_variables=["chat_history", "question"], template=quest_prompt)
-quest_gpt = LLMChain(
-    llm=ChatAnthropic(model=model_name),
-    prompt=q_prompt,
-    verbose=True
-)
+# quest_prompt = """Generate a standalone question which is based on the new question plus the chat history. 
+# Chat History:
+# {chat_history}
+# Just create the standalone question without commentary. New question: {question}"""
+# q_prompt = PromptTemplate(input_variables=["chat_history", "question"], template=quest_prompt)
+# quest_gpt = LLMChain(
+#     llm=ChatAnthropic(model=model_name),
+#     prompt=q_prompt,
+#     verbose=True
+# )
 
 # template = template + pt
 # @st.cache_resource
