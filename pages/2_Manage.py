@@ -5,13 +5,11 @@ import pinecone
 import PyPDF2
 from io import StringIO
 from langchain.vectorstores import Pinecone
-#from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import WebBaseLoader
-from langchain.document_loaders import UnstructuredWordDocumentLoader
-from InstructorEmbedding import INSTRUCTOR
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
+import docx2txt
+# from InstructorEmbedding import INSTRUCTOR
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 
 # Setting up Streamlit page configuration
 st.set_page_config(
@@ -22,14 +20,15 @@ st.set_page_config(
 # Getting the OpenAI API key from Streamlit Secrets
 anthropic_api_key = st.secrets.secrets.ANTHROPIC_API_KEY #OPENAI_API_KEY
 os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
-
-inference_api_key = st.secrets.secrets.INFERENCE_API_KEY
+openai_api_key = st.secrets.secrets.OPENAI_API_KEY #OPENAI_API_KEY
+os.environ["OPENAI_API_KEY"] = openai_api_key
 
 # Getting the Pinecone API key and environment from Streamlit Secrets
 PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 PINECONE_ENV = st.secrets.secrets.PINECONE_ENV
 os.environ["PINECONE_ENV"] = PINECONE_ENV
+
 
 @st.cache_data
 def load_docs(files):
@@ -46,12 +45,13 @@ def load_docs(files):
             stringio = StringIO(file_path.getvalue().decode("utf-8"))
             text = stringio.read()
             all_text.append(text)
-        elif file_extension == ".docx" or file_extension == ".doc":
-            docx_loader = UnstructuredWordDocumentLoader(file_path=file_path)
-            docx_doc = docx_loader.load()
-            all_text.append(docx_doc)
+        elif file_extension == ".docx":
+            docx_loader = docx2txt.process(file_path) #UnstructuredWordDocumentLoader(file_path)
+            #docx_doc = docx_loader.load()
+            st.write(docx_loader)
+            all_text.append(docx_loader)
         else:
-            st.warning('Please provide txt or pdf.', icon="⚠️")
+            st.warning('Please provide txt/pdf/docx/doc.', icon="⚠️")
     # st.write(all_text)
     return all_text  
 
@@ -89,6 +89,7 @@ def manage_chat():
                     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
                     docs = text_splitter.create_documents(documents)
                     st.success("Document Loaded Successfully!")
+                        
             # elif url_:
             #     #web_list = []
             #     website_ = st.text_input("Enter website URL:")
@@ -102,13 +103,9 @@ def manage_chat():
 
 
             # Initialize OpenAI embeddings
-            #embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
+            embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
             #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-            embeddings = HuggingFaceInferenceAPIEmbeddings(
-                                    api_key=inference_api_key,
-                                    model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
-                                        )
-            st.info("Embeddings model loaded!")
+            #st.info("Embeddings model loaded!")
             # Display the uploaded file content
             file_container = st.expander(f"Click here to see your uploaded content:")
             file_container.write(docs)
@@ -122,7 +119,7 @@ def manage_chat():
                 pinecone.create_index(
                         name = pinecone_index,
                         metric = 'cosine',
-                        dimension = 512 #1536  # 1536 dim of text-embedding-ada-002
+                        dimension = 1536 #512   # 1536 dim of text-embedding-ada-002
                         )
                 st.success('Index Successfully Created!')
                 time.sleep(80)
@@ -143,24 +140,24 @@ def manage_chat():
         #col1, col2 = st.columns([1,1])
         # doc_ = col1.checkbox("Upload Documents [PDF/TXT]")
         # url_ = col2.checkbox("Upload Website Content [URL]")
-        doc_url = st.radio(
-            "Select Content Format",
-            ["Upload Documents [PDF/TXT/DOCX/DOC]"],
-            key="visibility",
-            horizontal=True,
-            disabled=False
-            )
+        # doc_url = st.radio(
+        #     "Select Content Format",
+        #     ["Upload Documents [PDF/TXT/DOCX/DOC]"],
+        #     key="visibility",
+        #     horizontal=True,
+        #     disabled=False
+        #     )
         # Prompt the user to upload PDF/TXT files
         try:
-            if doc_url == "Upload Documents [PDF/TXT]":
-                st.write("Upload PDF/TXT Files:")
-                uploaded_files = st.file_uploader("Upload", type=["pdf", "txt"], label_visibility="collapsed", accept_multiple_files = True)
-                if uploaded_files != []:
-                    st.info('Initializing Document Loading...')
-                    documents = load_docs(uploaded_files)
-                    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-                    docs = text_splitter.create_documents(documents)
-                    st.success("Document Loaded Successfully!")
+            #if doc_url == "Upload Documents [PDF/TXT]":
+            st.write("Upload PDF/TXT/DOCX Files:")
+            uploaded_files = st.file_uploader("Upload", type=["pdf", "txt", "docx"], label_visibility="collapsed", accept_multiple_files = True)
+            if uploaded_files != []:
+                st.info('Initializing Document Loading...')
+                documents = load_docs(uploaded_files)
+                text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+                docs = text_splitter.create_documents(documents)
+                st.success("Document Loaded Successfully!")
 
             # elif doc_url == "Upload Website Content [URL]":
             #     #web_list = []
@@ -173,12 +170,8 @@ def manage_chat():
             #         st.success('Website Successfully Loaded!')
 
             # Initialize OpenAI embeddings
-            #embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
+            embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
             #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-            embeddings = HuggingFaceInferenceAPIEmbeddings(
-                                            api_key=inference_api_key,
-                                            model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
-                                        )
             # Display success message
             #st.success("Document Loaded Successfully!")
             # Display the uploaded file content
