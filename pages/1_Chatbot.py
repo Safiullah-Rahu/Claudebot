@@ -17,6 +17,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 import anthropic
 from langchain.chat_models import ChatAnthropic
+from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 
 # Setting up Streamlit page configuration
@@ -28,6 +29,8 @@ st.set_page_config(
 # Getting the OpenAI API key from Streamlit Secrets
 anthropic_api_key = st.secrets.secrets.ANTHROPIC_API_KEY #OPENAI_API_KEY
 os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
+
+inference_api_key = st.secrets.secrets.INFERENCE_API_KEY
 
 # Getting the Pinecone API key and environment from Streamlit Secrets
 PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
@@ -48,7 +51,11 @@ def select_index(__embeddings):
 text_field = "text"
 # Create OpenAI embeddings
 #embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
-embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+# embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+embeddings = HuggingFaceInferenceAPIEmbeddings(
+    api_key=inference_api_key,
+    model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
+)
 MODEL_OPTIONS = ["claude-2", "claude-instant-1"]
 model_name = st.sidebar.selectbox(label="Select Model", options=MODEL_OPTIONS)
 # lang_options = ["English", "German", "French", "Chinese", "Italian", "Japanese", "Arabic", "Hindi", "Turkish", "Urdu", "Russian", "Georgian"]
