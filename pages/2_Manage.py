@@ -89,14 +89,15 @@ def manage_chat():
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
             docs = text_splitter.create_documents(documents)
             st.success("Document Loaded Successfully!")
+            file_container = st.expander(f"Click here to see your uploaded content:")
+            file_container.write(docs)
 
         # Initialize OpenAI embeddings
         embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
         #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
         #st.info("Embeddings model loaded!")
         # Display the uploaded file content
-        file_container = st.expander(f"Click here to see your uploaded content:")
-        file_container.write(docs)
+        
     
         # Display success message
         # st.success("Document Loaded Successfully!")
