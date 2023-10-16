@@ -11,6 +11,7 @@ from langchain.document_loaders import WebBaseLoader
 from langchain.document_loaders import UnstructuredWordDocumentLoader
 from InstructorEmbedding import INSTRUCTOR
 from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 # Setting up Streamlit page configuration
 st.set_page_config(
@@ -21,6 +22,8 @@ st.set_page_config(
 # Getting the OpenAI API key from Streamlit Secrets
 anthropic_api_key = st.secrets.secrets.ANTHROPIC_API_KEY #OPENAI_API_KEY
 os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
+
+inference_api_key = st.secrets.secrets.INFERENCE_API_KEY
 
 # Getting the Pinecone API key and environment from Streamlit Secrets
 PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
@@ -100,7 +103,11 @@ def manage_chat():
 
             # Initialize OpenAI embeddings
             #embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
-            embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+            #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+            embeddings = HuggingFaceInferenceAPIEmbeddings(
+                                    api_key=inference_api_key,
+                                    model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
+                                        )
             st.info("Embeddings model loaded!")
             # Display the uploaded file content
             file_container = st.expander(f"Click here to see your uploaded content:")
@@ -167,7 +174,11 @@ def manage_chat():
 
             # Initialize OpenAI embeddings
             #embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
-            embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+            #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+            embeddings = HuggingFaceInferenceAPIEmbeddings(
+                                            api_key=inference_api_key,
+                                            model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
+                                        )
             # Display success message
             #st.success("Document Loaded Successfully!")
             # Display the uploaded file content
