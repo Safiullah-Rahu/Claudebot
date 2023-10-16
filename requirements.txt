@@ -6,5 +6,4 @@ pinecone-client
 PyPDF2
 pdfplumber
 anthropic
-sentence_transformers
-InstructorEmbedding
+docx2txt
