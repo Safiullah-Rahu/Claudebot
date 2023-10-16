@@ -3,7 +3,7 @@ import os
 import time
 import datetime
 import pinecone
-#from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.memory import ConversationBufferWindowMemory
 from langchain import OpenAI
@@ -14,10 +14,10 @@ from langchain.chat_models import ChatOpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 #from langchain.callbacks import StreamlitCallbackHandler
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 import anthropic
 from langchain.chat_models import ChatAnthropic
-from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
+# from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 
 # Setting up Streamlit page configuration
@@ -29,8 +29,10 @@ st.set_page_config(
 # Getting the OpenAI API key from Streamlit Secrets
 anthropic_api_key = st.secrets.secrets.ANTHROPIC_API_KEY #OPENAI_API_KEY
 os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
+openai_api_key = st.secrets.secrets.OPENAI_API_KEY #OPENAI_API_KEY
+os.environ["OPENAI_API_KEY"] = openai_api_key
 
-inference_api_key = st.secrets.secrets.INFERENCE_API_KEY
+# inference_api_key = st.secrets.secrets.INFERENCE_API_KEY
 
 # Getting the Pinecone API key and environment from Streamlit Secrets
 PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
@@ -42,7 +44,7 @@ pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 
 param1 = True
 @st.cache_data
-def select_index(__embeddings):
+def select_index():
     if param1:
         pinecone_index_list = pinecone.list_indexes()
     return pinecone_index_list
@@ -50,12 +52,12 @@ def select_index(__embeddings):
 # Set the text field for embeddings
 text_field = "text"
 # Create OpenAI embeddings
-#embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
+embeddings = OpenAIEmbeddings(model = 'text-embedding-ada-002')
 # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-embeddings = HuggingFaceInferenceAPIEmbeddings(
-    api_key=inference_api_key,
-    model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
-)
+# embeddings = HuggingFaceInferenceAPIEmbeddings(
+#     api_key=inference_api_key,
+#     model_name= "hkunlp/instructor-xl" #"sentence-transformers/all-MiniLM-l6-v2"
+# )
 MODEL_OPTIONS = ["claude-2", "claude-instant-1"]
 model_name = st.sidebar.selectbox(label="Select Model", options=MODEL_OPTIONS)
 # lang_options = ["English", "German", "French", "Chinese", "Italian", "Japanese", "Arabic", "Hindi", "Turkish", "Urdu", "Russian", "Georgian"]
@@ -82,7 +84,7 @@ memory = init_memory()
 
 # pt = lang_dic[language]
 
-pinecone_index_list = select_index(embeddings)
+pinecone_index_list = select_index()
 pinecone_index = st.sidebar.selectbox(label="Select Index", options = pinecone_index_list )
 TEMPERATURE_MIN_VALUE = 0.0
 TEMPERATURE_MAX_VALUE = 1.0
@@ -162,10 +164,10 @@ def chat(pinecone_index, query):
     # @st.cache_resource
     # def agent_meth(query, pt):
 
-    quest = quest_gpt.predict(question=query, chat_history=st.session_state.messages)
+    #quest = quest_gpt.predict(question=query, chat_history=st.session_state.messages)
 
     #web_res = search.run(quest)
-    doc_res = db.similarity_search(quest, k=1)
+    doc_res = db.similarity_search(query, k=2)
     result_string = ' '.join(stri.page_content for stri in doc_res)
     #output = chatgpt_chain.predict(human_input=quest)
     contex = "\nSource: " + result_string +"\nAssistant:"
@@ -180,7 +182,7 @@ def chat(pinecone_index, query):
     )
         
         
-    return agent, contex, result_string, quest
+    return agent, contex, result_string#, quest
     
 
 # Display chat messages from history on app rerun
@@ -204,8 +206,8 @@ if prompt := st.chat_input():
         #st.sidebar.write("standalone question: ", quest)
         with st.spinner("Thinking..."):
             #with get_openai_callback() as cb:
-            agent, contex, result_string, quest = chat(pinecone_index, prompt)
-            response = agent.predict(question=quest, chat_history = st.session_state.messages)#,callbacks=[st_callback])#, callbacks=[st_callback])#.run(prompt, callbacks=[st_callback])
+            agent, contex, result_string = chat(pinecone_index, prompt)
+            response = agent.predict(question=prompt, chat_history = st.session_state.messages)#,callbacks=[st_callback])#, callbacks=[st_callback])#.run(prompt, callbacks=[st_callback])
             st.write(response)
             st.session_state.chat_history.append((prompt, response))
             st.session_state.messages.append({"role": "assistant", "content": response})
