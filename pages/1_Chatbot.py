@@ -112,7 +112,8 @@ templat_1 = """You are conversational AI and responsible to answer user queries 
 You always provide useful information & details available in the given sources with long and detailed answer.
 
 Always consider Chat history while answering in order to remain consistent with user queries.
-        
+
+Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 """
 
 templat_2 = """
