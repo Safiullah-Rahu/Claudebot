@@ -107,19 +107,33 @@ if "messages" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-templat = """You are conversational AI and responsible to answer user queries in a conversational manner. 
+templat_1 = """You are conversational AI and responsible to answer user queries in a conversational manner. 
 
 You always provide useful information & details available in the given sources with long and detailed answer.
 
 Always consider Chat history while answering in order to remain consistent with user queries.
+        
+"""
 
-Chat History:
+templat_2 = """
+\nChat History:
 {chat_history}
 Follow Up Input: {question}
 
 Use the information from the below source to answer any questions.
 
 """
+prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
+
+def prom(prompt_opt):
+    if prompt_opt == "Use Default Prompt":
+        templat = templat_1 + templat_2
+        st.sidebar.write(templat_1 + templat_2)
+        return templat
+    elif prompt_opt == "Use Custom Prompt":
+        u_input = st.sidebar.text_area("Write your prompt here: ", "", placeholder=templat_1)
+        templat = u_input + templat_2
+        return templat
 
 # chatGPT_template = """Assistant is a large language model trained by OpenAI.
 
@@ -154,6 +168,7 @@ Use the information from the below source to answer any questions.
 
 # template = template + pt
 # @st.cache_resource
+templat = prom(prompt_opt)
 def chat(pinecone_index, query):
 
     db = ret(pinecone_index)
