@@ -120,8 +120,7 @@ templat_2 = """
 {chat_history}
 Follow Up Input: {question}
 
-Use the following information to answer any questions if necessary or according to follow up input question.
-Don't add these phrases in your response "Based on the information provided" or "According to the source". Never include these sentences in your answer.
+Use the following context to answer questions if necessary or according to follow up input question.
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
 
