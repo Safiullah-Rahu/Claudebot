@@ -127,7 +127,7 @@ prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use 
 def prom(prompt_opt):
     if prompt_opt == "Use Default Prompt":
         templat = templat_1 + templat_2
-        st.sidebar.write(templat_1 + templat_2)
+        #st.sidebar.write(templat_1 + templat_2)
         return templat
     elif prompt_opt == "Use Custom Prompt":
         u_input = st.sidebar.text_area("Write your prompt here: ", "", placeholder=templat_1)
@@ -168,7 +168,7 @@ def prom(prompt_opt):
 # template = template + pt
 # @st.cache_resource
 templat = prom(prompt_opt)
-#st.sidebar.write(templat)
+st.sidebar.write(templat)
 def chat(pinecone_index, query):
 
     db = ret(pinecone_index)
