@@ -113,7 +113,6 @@ You always provide useful information & details available in the given sources w
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 
-Don't add these phrases in your response "Based on the source provided" or "According to the source".
 """
 
 templat_2 = """
@@ -122,7 +121,7 @@ templat_2 = """
 Follow Up Input: {question}
 
 Use the following information to answer any questions if necessary or according to follow up input question.
-
+Don't add these phrases in your response "Based on the source provided" or "According to the source".
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
 
