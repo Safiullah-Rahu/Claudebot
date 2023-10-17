@@ -114,6 +114,8 @@ You always provide useful information & details available in the given sources w
 Always consider Chat history while answering in order to remain consistent with user queries.
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
+
+Never add these phrases in response "Based on the source" or "According to the source".
 """
 
 templat_2 = """
