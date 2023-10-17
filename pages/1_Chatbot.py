@@ -107,11 +107,9 @@ if "messages" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-templat_1 = """You are conversational AI and responsible to answer user queries in a conversational manner. 
+templat_1 = """You are conversational AI assistant and responsible to answer user queries in a conversational manner. 
 
 You always provide useful information & details available in the given sources with long and detailed answer.
-
-Always consider Chat history while answering in order to remain consistent and conversational when necessary with user queries.
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 
