@@ -121,7 +121,7 @@ templat_2 = """
 {chat_history}
 Follow Up Input: {question}
 
-Use the information from the below source to answer any questions if necessary or according to follow up input.
+Use the following information to answer any questions if necessary or according to follow up input question.
 
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
