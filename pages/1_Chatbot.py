@@ -111,7 +111,7 @@ templat_1 = """You are conversational AI and responsible to answer user queries 
 
 You always provide useful information & details available in the given sources with long and detailed answer.
 
-Always consider Chat history while answering in order to remain consistent with user queries.
+Always consider Chat history while answering in order to remain consistent and conversational when necessary with user queries.
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 
@@ -123,7 +123,7 @@ templat_2 = """
 {chat_history}
 Follow Up Input: {question}
 
-Use the information from the below source to answer any questions.
+Use the information from the below source to answer any questions if necessary or according to follow up input.
 
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
