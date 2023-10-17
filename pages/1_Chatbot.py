@@ -113,7 +113,7 @@ You always provide useful information & details available in the given sources w
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 
-Do not add these phrases in response "Based on the source provided" or "According to the source", avoid using these phrases in your answer.
+Don't add these phrases in your response "Based on the source provided" or "According to the source".
 """
 
 templat_2 = """
