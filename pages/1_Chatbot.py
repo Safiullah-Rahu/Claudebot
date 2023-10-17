@@ -115,7 +115,7 @@ Always consider Chat history while answering in order to remain consistent with 
 
 Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
 
-Never add these phrases in response "Based on the source" or "According to the source".
+Do not add these phrases in response "Based on the source provided" or "According to the source", avoid using these phrases in your answer.
 """
 
 templat_2 = """
