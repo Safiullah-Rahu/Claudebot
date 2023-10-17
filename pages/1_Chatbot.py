@@ -168,7 +168,7 @@ def prom(prompt_opt):
 # template = template + pt
 # @st.cache_resource
 templat = prom(prompt_opt)
-st.sidebar.write(templat)
+#st.sidebar.write(templat)
 def chat(pinecone_index, query):
 
     db = ret(pinecone_index)
