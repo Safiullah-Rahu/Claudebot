@@ -120,9 +120,9 @@ Answer the Follow Up Input by user according to the query and what is asked or s
 templat_2 = """
 \nChat History:
 {chat_history}
-Follow Up Input: {question}
+Human: {question}
 
-Use the following context to answer questions if necessary or according to follow up input question.
+Context:
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
 
