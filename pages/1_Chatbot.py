@@ -184,7 +184,7 @@ def chat(pinecone_index, query):
     #quest = quest_gpt.predict(question=query, chat_history=st.session_state.messages)
 
     #web_res = search.run(quest)
-    doc_res = db.similarity_search(query, k=2)
+    doc_res = db.similarity_search(query, k=6)
     result_string = ' '.join(stri.page_content for stri in doc_res)
     #output = chatgpt_chain.predict(human_input=quest)
     contex = "\nSource: " + result_string +"\nAssistant:"
