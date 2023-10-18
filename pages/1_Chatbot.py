@@ -86,6 +86,8 @@ memory = init_memory()
 
 pinecone_index_list = select_index()
 pinecone_index = st.sidebar.selectbox(label="Select Index", options = pinecone_index_list )
+# Reset chat button
+res = st.button("Reset Chat")
 TEMPERATURE_MIN_VALUE = 0.0
 TEMPERATURE_MAX_VALUE = 1.0
 TEMPERATURE_DEFAULT_VALUE = 0.9
@@ -226,6 +228,10 @@ if prompt := st.chat_input():
             st.write(response)
             st.session_state.chat_history.append((prompt, response))
             st.session_state.messages.append({"role": "assistant", "content": response})
+# Reset chat session state
+if res:
+    st.session_state.chat_history = []
+    st.session_state.messages = []
 
         # st.sidebar.header("Total Token Usage:")
         # st.sidebar.write(f"""
