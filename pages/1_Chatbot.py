@@ -87,7 +87,7 @@ memory = init_memory()
 pinecone_index_list = select_index()
 pinecone_index = st.sidebar.selectbox(label="Select Index", options = pinecone_index_list )
 # Reset chat button
-res = st.button("Reset Chat")
+res = st.sidebar.button("Reset Chat")
 TEMPERATURE_MIN_VALUE = 0.0
 TEMPERATURE_MAX_VALUE = 1.0
 TEMPERATURE_DEFAULT_VALUE = 0.9
