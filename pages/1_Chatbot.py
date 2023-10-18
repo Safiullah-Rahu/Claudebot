@@ -199,7 +199,7 @@ def chat(pinecone_index, query):
     )
         
         
-    return agent, contex, result_string#, quest
+    return agent, contex, result_string, templ
     
 
 # Display chat messages from history on app rerun
@@ -223,11 +223,13 @@ if prompt := st.chat_input():
         #st.sidebar.write("standalone question: ", quest)
         with st.spinner("Thinking..."):
             #with get_openai_callback() as cb:
-            agent, contex, result_string = chat(pinecone_index, prompt)
+            agent, contex, result_string, templ = chat(pinecone_index, prompt)
             response = agent.predict(question=prompt, chat_history = st.session_state.messages)#,callbacks=[st_callback])#, callbacks=[st_callback])#.run(prompt, callbacks=[st_callback])
             st.write(response)
             st.session_state.chat_history.append((prompt, response))
             st.session_state.messages.append({"role": "assistant", "content": response})
+            st.sidebar.write("Prompt Going into Model: ")
+            st.sidebar.write(templ)
 # Reset chat session state
 if res:
     st.session_state.chat_history = []
