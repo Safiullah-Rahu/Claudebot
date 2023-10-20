@@ -109,20 +109,33 @@ if "messages" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-templat_1 = """You are conversational AI assistant and responsible to answer user queries in a conversational manner. 
-
-You always provide useful information & details available in the given sources with long and detailed answer.
-
-Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
+templat_1 = """\nChat History:\n\n{chat_history}\n\n </context>
 
 """
 
-templat_2 = """
-\nChat History:
-{chat_history}
-Human: {question}
+# """You are conversational AI assistant and responsible to answer user queries in a conversational manner. 
 
-Context:
+# You always provide useful information & details available in the given sources with long and detailed answer.
+
+# Answer the Follow Up Input by user according to the query and what is asked or said by user in follow up input.
+
+# """
+
+templat_2 = """Human: You will be acting as a friendly enterprise agility change consultant named Laura created by the company Enterprise Agility University. Your goal is to give helpful guidance for users wanting to improve their company's agility. 
+Please read the user’s question supplied within the <question> tags. Then, using only the contextual information provided above within the <context> tags, generate an answer to the question.
+
+Here are some important rules for the interaction:
+- Always stay in character, as Laura, an AI from Enterprise Agility University.  
+- If you are unsure how to respond, say "Sorry, I didn't understand that. Could you rephrase your question?"
+
+Here is the user's question:
+<question>
+{question}
+</question>
+ 
+Please respond to the user’s questions within <response></response> tags.
+
+Assistant: [Laura from Enterprise Agility University] <response>
 """
 prompt_opt = st.sidebar.selectbox(label="Select Prompt Option", options = ["Use Default Prompt", "Use Custom Prompt"])
 
@@ -133,7 +146,7 @@ def prom(prompt_opt):
         return templat
     elif prompt_opt == "Use Custom Prompt":
         u_input = st.sidebar.text_area("Write your prompt here: ", "", placeholder=templat_1)
-        templat = u_input + templat_2
+        templat = u_input + "\n\n" + templat_1 + templat_2
         return templat
 
 # chatGPT_template = """Assistant is a large language model trained by OpenAI.
@@ -187,8 +200,8 @@ def chat(pinecone_index, query):
     doc_res = db.similarity_search(query, k=6)
     result_string = ' '.join(stri.page_content for stri in doc_res)
     #output = chatgpt_chain.predict(human_input=quest)
-    contex = "\nSource: " + result_string +"\nAssistant:"
-    templ = templat + contex
+    contex = "\nSource: " + result_string #+"\nAssistant:"
+    templ = "<context>" + contex + "\n\n" + templat 
     promptt = PromptTemplate(input_variables=["chat_history", "question"], template=templ)
     agent = LLMChain(
         llm=ChatAnthropic(model=model_name, temperature=temperature, top_p=top_p, top_k=top_k, max_tokens_to_sample=99999, streaming=True),
@@ -225,9 +238,12 @@ if prompt := st.chat_input():
             #with get_openai_callback() as cb:
             agent, contex, result_string, templ = chat(pinecone_index, prompt)
             response = agent.predict(question=prompt, chat_history = st.session_state.messages)#,callbacks=[st_callback])#, callbacks=[st_callback])#.run(prompt, callbacks=[st_callback])
-            st.write(response)
-            st.session_state.chat_history.append((prompt, response))
-            st.session_state.messages.append({"role": "assistant", "content": response})
+            respon = str(response)
+            respo = respon.replace("<response>", "")
+            respo = respon.replace("</response>", "")
+            st.write(respo)
+            st.session_state.chat_history.append((prompt, respo))
+            st.session_state.messages.append({"role": "assistant", "content": respo})
             st.sidebar.write("Prompt Going into Model: ")
             st.sidebar.write(templ)
 # Reset chat session state
